@@ -56,7 +56,7 @@ public class GameEngine{
 	}
 	
 	public boolean isGameOver() {
-		if(count == 10){
+		if(count == 11){
 			return true; 
 		}
 		else return false;

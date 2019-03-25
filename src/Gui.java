@@ -286,7 +286,9 @@ public class Gui extends JFrame{
 		picPanel.setPreferredSize(new Dimension(800,500));
 		picPanel.setOpaque(true);
 		
-		picLabel = new JLabel(engine.nextPic());
+		GameIcon first = engine.getPics().getPicMap().get(0);
+		first.setHasPlayed(true);
+		picLabel = new JLabel(first);
 		
 		
 		
