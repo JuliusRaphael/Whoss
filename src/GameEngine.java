@@ -1,21 +1,26 @@
-import java.util.ArrayList;
-
+import java.util.Observable;
 import java.util.Random;
 
 
 
-public class GameEngine{
+public class GameEngine extends Observable{
 	PictureMaker pics;
 	Random rand;
-	ArrayList<GameIcon> activeIcons;
+	GameIcon currentIcon;
 	boolean gameOver;
 	int count;
 	
 
 	public GameEngine(PictureMaker p) {
-		activeIcons = new ArrayList<>();
+		
 		this.pics = p;
 		rand = new Random();
+	}
+	
+	public GameIcon initiateGame() {
+		GameIcon first = getPics().getPicMap().get(rand.nextInt(getPics().getPicMap().size()));
+		first.setHasPlayed(true);
+		return first;
 	}
 	
 	public GameIcon getScoreIcon(int score) {
@@ -29,17 +34,18 @@ public class GameEngine{
 		return null;
 	}
 	
-	public GameIcon nextPic() {
+	public void nextPic() {
 		
-		GameIcon gc = pics.getPicMap().get(rand.nextInt(pics.getPicMap().size()));
-		while(gc.isHasPlayed()){
-			gc = pics.getPicMap().get(rand.nextInt(pics.getPicMap().size()));
+		currentIcon = pics.getPicMap().get(rand.nextInt(pics.getPicMap().size()));
+		while(currentIcon.isHasPlayed()){
+			currentIcon = pics.getPicMap().get(rand.nextInt(pics.getPicMap().size()));
 			
 		}
-		gc.setHasPlayed(true);
+		currentIcon.setHasPlayed(true);
 		count ++;
-
-		return gc;
+		setChanged();
+		notifyObservers(currentIcon);
+		
 	}
 
 	
@@ -51,12 +57,14 @@ public class GameEngine{
 		
 	}
 	
+	
+	
 	public PictureMaker getPics() {
 		return pics;
 	}
 	
 	public boolean isGameOver() {
-		if(count == 11){
+		if(count == 10){
 			return true; 
 		}
 		else return false;

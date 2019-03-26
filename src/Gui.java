@@ -1,9 +1,13 @@
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class Gui extends JFrame{
+
+@SuppressWarnings("deprecation")
+public class Gui extends JFrame implements Observer{
 	/**
 	 * 
 	 */
@@ -38,14 +42,13 @@ public class Gui extends JFrame{
 	private ImageIcon scoreIcon;
 	private ImageIcon gameLogo;
 	private ImageIcon gameOverIcon;
-	private int count = 0;
-	private int score = 0;
-	String[] val;
+	private int score;
+	
 	
 	public Gui(GameEngine engine) {
 		
 		this.engine = engine;
-		gameLogo  = new ImageIcon(getClass().getResource("gameLogo.png"));
+		gameLogo  = new ImageIcon(getClass().getResourceAsStream("gameLogo.png"));
 		gameOverIcon = new ImageIcon(getClass().getResource("gameover.png"));
 		scoreIcon = new ImageIcon(getClass().getResource("score.png"));
 		gbc.gridx = 0;
@@ -121,11 +124,13 @@ public class Gui extends JFrame{
 		score=0;
 		
 		makeFrame();
-	
+		
 	}
 
 	private void makeFrame(){
+		getContentPane().removeAll();
 		engine.reset();
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
@@ -154,6 +159,7 @@ public class Gui extends JFrame{
 		validate();
 		pack();
 		setVisible(true);
+		
 	}
 	
 	public void makePickPanel() {
@@ -192,20 +198,24 @@ public class Gui extends JFrame{
 	}
 	
 	private void nextPic(String key) {
-		val = ((GameIcon)picLabel.getIcon()).getKey().split("y");
+		String[] val = ((GameIcon)picLabel.getIcon()).getKey().split("y");
 		
-		GameIcon i = engine.nextPic();
+		if(key.equals(val[0])) {
+			
+			score++;
+			System.out.println("score: "+score);
+		}
+		
+		
+		engine.nextPic();
+		
 
 		if(!engine.isGameOver()) {	
-			
-			picLabel.setIcon(i);
 			
 			sammyButton.setSelected(false);
 			johnnyButton.setSelected(false);
 			
-			if(key.equals(val[0])) {
-				score++;
-			}
+			
 		}else{
 			System.out.print("GameOver vid " + engine.count + " bilder");
 			makeGameOver();
@@ -286,9 +296,10 @@ public class Gui extends JFrame{
 		picPanel.setPreferredSize(new Dimension(800,500));
 		picPanel.setOpaque(true);
 		
-		GameIcon first = engine.getPics().getPicMap().get(0);
-		first.setHasPlayed(true);
-		picLabel = new JLabel(first);
+		/*GameIcon first = engine.getPics().getPicMap().get(rand.nextInt(engine.getPics().getPicMap().size()));
+		first.setHasPlayed(true);*/
+		picLabel = new JLabel(engine.initiateGame());
+		
 		
 		
 		
@@ -298,6 +309,15 @@ public class Gui extends JFrame{
 		
 		
 		picPanel.add(picLabel);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof Observable && arg instanceof GameIcon) {
+			
+			picLabel.setIcon((GameIcon)arg);
+		}
+		
 	}
 	
 
