@@ -48,7 +48,7 @@ public class Gui extends JFrame implements Observer{
 	public Gui(GameEngine engine) {
 		
 		this.engine = engine;
-		gameLogo  = new ImageIcon(getClass().getResourceAsStream("gameLogo.png"));
+		gameLogo  = new ImageIcon(getClass().getResource("gameLogo.png"));
 		gameOverIcon = new ImageIcon(getClass().getResource("gameover.png"));
 		scoreIcon = new ImageIcon(getClass().getResource("score.png"));
 		gbc.gridx = 0;
